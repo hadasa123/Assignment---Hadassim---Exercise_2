@@ -24,12 +24,9 @@ namespace Game
         {
             this.BoardData[r, c] = -1;
         }
-        public void SetData(int r, int c, Board board, int answer)
+        public void SetData(int r, int c, Board board)
         {
-            if (answer == 1)
-                this.BoardData[r, c] = 10;
-            else
-                this.BoardData[r, c]= board.GetData(r, c); 
+            this.BoardData[r, c]= board.GetData(r, c); 
         }
         public int SumOfEmptySquares()
         {

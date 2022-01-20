@@ -26,24 +26,35 @@ namespace Game
             this.Suspects = new BoardOfSuspects(rows, columns);
 
         }
-
+        public void ShowAllBombs(Board board, PlayerBoard gamePlayer)
+        {
+            for (int i = 0; i < board.RowLengh; i++)
+            {
+                for (int j = 0; j < board.ColLengh; j++)
+                {
+                    if(board.GetData(i, j)==9)
+                        gamePlayer.SetData(i, j, board);
+                }  
+            }
+            gamePlayer.Draw();
+        }
         public bool CheckingTheSelection(int r, int c, Board board, PlayerBoard gamePlayer)
         {
             if(Suspects.GetData(r, c) == 0)
             {
-                int a = 0;
+               
                 if (board.GetData(r, c) == 9)
                 {
-                    Console.WriteLine("loss :(");
 
-                    //ShowAllBombs();
+                    ShowAllBombs( board,  gamePlayer);
+                    Console.WriteLine("loss :(");
                     return false;
 
                 }
                 else if (board.GetData(r, c) > 0)
                 {
 
-                    gamePlayer.SetData(r, c, board, a);
+                    gamePlayer.SetData(r, c, board);
                     return true;
                 }
                 else if (gamePlayer.GetData(r, c) == -1)
@@ -51,7 +62,7 @@ namespace Game
 
                     if (r > 0 && r < gamePlayer.RowLengh - 1 && c > 0 && c < gamePlayer.ColLengh - 1)
                     {
-                        gamePlayer.SetData(r, c, board, a);
+                        gamePlayer.SetData(r, c, board);
                         CheckingTheSelection(r - 1, c - 1, board, gamePlayer);
                         CheckingTheSelection(r - 1, c, board, gamePlayer);
                         CheckingTheSelection(r - 1, c + 1, board, gamePlayer);
@@ -63,7 +74,7 @@ namespace Game
                     }
                     else if (r == 0 && c > 0 && c < gamePlayer.ColLengh - 1)
                     {
-                        gamePlayer.SetData(r, c, board, a);
+                        gamePlayer.SetData(r, c, board);
                         CheckingTheSelection(r, c - 1, board, gamePlayer);
                         CheckingTheSelection(r, c + 1, board, gamePlayer);
                         CheckingTheSelection(r + 1, c - 1, board, gamePlayer);
@@ -72,7 +83,7 @@ namespace Game
                     }
                     else if (r > 0 && r < gamePlayer.RowLengh - 1 && c == 0)
                     {
-                        gamePlayer.SetData(r, c, board, a);
+                        gamePlayer.SetData(r, c, board);
                         CheckingTheSelection(r - 1, c, board, gamePlayer);
                         CheckingTheSelection(r - 1, c + 1, board, gamePlayer);
                         CheckingTheSelection(r, c + 1, board, gamePlayer);
@@ -81,7 +92,7 @@ namespace Game
                     }
                     else if (r == gamePlayer.RowLengh - 1 && c > 0 && c < gamePlayer.ColLengh - 1)
                     {
-                        gamePlayer.SetData(r, c, board, a);
+                        gamePlayer.SetData(r, c, board);
                         CheckingTheSelection(r - 1, c - 1, board, gamePlayer);
                         CheckingTheSelection(r - 1, c, board, gamePlayer);
                         CheckingTheSelection(r - 1, c + 1, board, gamePlayer);
@@ -90,7 +101,7 @@ namespace Game
                     }
                     else if (r > 0 && r < gamePlayer.RowLengh - 1 && c == gamePlayer.ColLengh - 1)
                     {
-                        gamePlayer.SetData(r, c, board, a);
+                        gamePlayer.SetData(r, c, board);
                         CheckingTheSelection(r - 1, c - 1, board, gamePlayer);
                         CheckingTheSelection(r - 1, c, board, gamePlayer);
                         CheckingTheSelection(r, c - 1, board, gamePlayer);
@@ -99,28 +110,28 @@ namespace Game
                     }
                     else if (r == 0 && c == 0)
                     {
-                        gamePlayer.SetData(r, c, board, a);
+                        gamePlayer.SetData(r, c, board);
                         CheckingTheSelection(r, c + 1, board, gamePlayer);
                         CheckingTheSelection(r + 1, c, board, gamePlayer);
                         CheckingTheSelection(r + 1, c + 1, board, gamePlayer);
                     }
                     else if (r == gamePlayer.RowLengh - 1 && c == gamePlayer.ColLengh - 1)
                     {
-                        gamePlayer.SetData(r, c, board, a);
+                        gamePlayer.SetData(r, c, board);
                         CheckingTheSelection(r, c - 1, board, gamePlayer);
                         CheckingTheSelection(r - 1, c, board, gamePlayer);
                         CheckingTheSelection(r - 1, c - 1, board, gamePlayer);
                     }
                     else if (r == 0 && c == gamePlayer.ColLengh - 1)
                     {
-                        gamePlayer.SetData(r, c, board, a);
+                        gamePlayer.SetData(r, c, board);
                         CheckingTheSelection(r, c - 1, board, gamePlayer);
                         CheckingTheSelection(r + 1, c - 1, board, gamePlayer);
                         CheckingTheSelection(r + 1, c, board, gamePlayer);
                     }
                     else if (r == gamePlayer.RowLengh - 1 && c == 0)
                     {
-                        gamePlayer.SetData(r, c, board, a);
+                        gamePlayer.SetData(r, c, board);
                         CheckingTheSelection(r - 1, c, board, gamePlayer);
                         CheckingTheSelection(r - 1, c + 1, board, gamePlayer);
                         CheckingTheSelection(r, c + 1, board, gamePlayer);
@@ -130,11 +141,8 @@ namespace Game
             }
             return true;
         }
-        public void stopTheGame()
-        {
-            Console.WriteLine("You can not continue playing, you do not follow the rules of the game");
-        }
-        public void MarkOrSuspect(ref int r,ref int c)
+       
+        public void MarkOrSuspect(ref int r,ref int c,ref bool stop)
         {
             Console.WriteLine("you want to mark a suspect?");
             Console.WriteLine("Press 1 to suspect. 2 to unSuspect, otherwise write any number you want");
@@ -149,20 +157,36 @@ namespace Game
                 if (this.Suspects.GetData(r, c) == 1)
                 {
                     Console.WriteLine("Wrong Step");
+                    stop = true;
                     return;
                 }
                 else
                 {
-                    if (PBoard.GetData(r, c) != -1)
-                        Console.WriteLine("The slot is already suspicious");
-                    else
+                    if (PBoard.GetData(r, c) == -1)
                         Suspects.SetData(r, c);
+                    else
+                    {
+                        Console.WriteLine("Sorry, but it's not possible in this square");
+                        Console.WriteLine("Wrong Step");
+                        stop = true;
+                        return;
+                    }     
                 }
             }
             if (answer == 2)
             {
-                PBoard.SetBackToUnKnown(r, c);                     
-                Suspects.SetDataZero(r, c);
+                if (Suspects.GetData(r,c)==1)
+                {
+                    PBoard.SetBackToUnKnown(r, c);
+                    Suspects.SetDataZero(r, c);
+                }
+                else
+                {
+                    Console.WriteLine("The square was not suspicious");
+                    Console.WriteLine("Wrong Step");
+                    stop = true;
+                    return;
+                }
             }                
         }
         public void Play()
@@ -173,16 +197,22 @@ namespace Game
             Console.WriteLine("bombs");
             HiddenBoard.Draw();
             int r=0, c=0;
-            MarkOrSuspect(ref r,ref c);
-            while (CheckingTheSelection(r, c, this.hiddenBoard, this.pBoard))
+            bool stop = false;
+            MarkOrSuspect(ref r,ref c, ref stop);
+            if (!stop)
             {
-                PBoard.Draw();
-                if (this.numOfBombs == pBoard.SumOfEmptySquares())
+                while (CheckingTheSelection(r, c, this.hiddenBoard, this.pBoard))
                 {
+                    PBoard.Draw();
+                    if (this.numOfBombs == pBoard.SumOfEmptySquares())
+                    {
                         Console.WriteLine("Triumph :)");
                         break;
+                    }
+                    MarkOrSuspect(ref r, ref c, ref stop);
+                    if (stop)
+                        break;
                 }
-                MarkOrSuspect(ref r, ref c); 
             }
         }  
     }

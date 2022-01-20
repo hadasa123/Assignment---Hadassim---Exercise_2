@@ -11,6 +11,7 @@ namespace TryMe
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to the game Select a board size");
+            Console.WriteLine("you need to enter minimum 2x2");
             Console.WriteLine("Select the number of rows"  );
             int rows = Int32.Parse(Console.ReadLine());
             Console.WriteLine("Select the number of columns");
